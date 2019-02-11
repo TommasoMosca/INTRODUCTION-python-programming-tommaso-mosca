@@ -1,0 +1,62 @@
+seq1= 'ACTTGGCAT'
+seq2= 'GTTGAC'
+cols= len(seq1) +1
+rows= len(seq2) +1
+
+#definition of the different scores
+MATCH = 2
+MISMATCH = 1
+GAP = -2
+
+#definition of the pretty_matrix function
+def pretty_matrix(M):
+	for i in range(rows):
+		print M[i]
+
+#inizialization of the scoring_matrix
+SW = [[(0, '0') for j in range(cols)] for i in range(rows)]
+
+
+
+
+pretty_matrix(SW)
+
+#populating the matrix
+
+def population_matrix(seq1, seq2, SW):
+	BEST = 0
+	global Max_I, Max_J
+	for j in range(1, cols):
+		for i in range(1, rows):
+			if seq1[j-1] == seq2[i-1]:
+				DIAGONAL_SCORE = SW[i-1][j-1][0]+ MATCH
+			else:
+				DIAGONAL_SCORE = SW[i-1][j-1][0]+ MISMATCH
+
+			UP_SCORE = SW[i-1][j][0] + GAP
+
+			LEFT_SCORE = SW[i][j-1][0] + GAP
+			
+			Max_Score = max(DIAGONAL_SCORE, UP_SCORE, LEFT_SCORE, 0)
+			
+			if Max_Score == DIAGONAL_SCORE:
+				SW[i][j] = (Max_Score, 'D')
+			elif Max_Score == UP_SCORE:
+				SW[i][j] = (Max_Score, 'U')
+			else:
+				SW[i][j] = (Max_Score, 'L')
+			
+			if Max_Score >= BEST:
+				BEST = Max_Score
+				Max_I = i
+				Max_J = j
+
+
+population_matrix(seq1, seq2, SW)
+
+S = population_matrix(seq1, seq2, SW)
+
+pretty_matrix(S)
+
+print 'coordinates of the MAX are:'
+print Max_I, Max_J
